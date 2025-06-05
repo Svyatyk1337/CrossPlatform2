@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${transfer.id != null} ? 'Редагувати Трансфер' : 'Додати Трансфер'">Форма Трансферу</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .bg-custom-header {
+            background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+            color: white;
+        }
+        .btn-primary-custom {
+            background: linear-gradient(135deg, #27ae60 0%, #219a52 100%);
+            border: none;
+        }
+        .btn-secondary-custom {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            border: none;
+        }
+        .section-title {
+            color: #2c3e50;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 0.5rem;
+        }
+    </style>
+</head>
+<body class="bg-light">
+<div class="container py-5">
+    <div class="card shadow-lg">
+        <div class="card-header bg-custom-header">
+            <h3 class="mb-0">
+                <i class="fas fa-exchange-alt me-2"></i>
+                <span th:text="${transfer.id != null} ? 'Редагувати Трансфер' : 'Додати Трансфер'"></span>
+            </h3>
+        </div>
+
+        <div class="card-body">
+            <form th:action="@{/transfers/save}"
+                  th:object="${transfer}" method="post">
+
+                <input type="hidden" th:field="*{id}"/>
+                <input type="hidden" th:if="${transfer.player != null && transfer.player.id != null}" th:field="*{player.id}"/>
+
+                <div th:if="${#fields.hasGlobalErrors() or #fields.hasErrors('*')}" class="alert alert-danger mb-4">
+                    <p th:if="${#fields.hasGlobalErrors()}" th:each="err : ${#fields.globalErrors()}" th:text="${err}"></p>
+                    <ul th:if="${#fields.hasErrors('*') && !#fields.hasGlobalErrors()}" class="mb-0">
+                        <li th:each="err : ${#fields.errors('*')}" th:text="${err}"></li>
+                    </ul>
+                </div>
+
+
+                <h5 class="section-title mb-4">Дані гравця</h5>
+                <div class="row g-3 mb-4">
+                    <div class="col-md-4">
+                        <label for="playerName" class="form-label">Ім'я гравця</label>
+                        <input type="text" id="playerName" name="playerName" th:value="*{player != null ? player.name : ''}" class="form-control" required>
+                        <div th:if="${#fields.hasErrors('player.name')}" th:errors="*{player.name}" class="text-danger"></div>
+                    </div>
+                    <div class="col-md-4">
+                        <label for="playerPosition" class="form-label">Позиція</label>
+                        <input type="text" id="playerPosition" name="playerPosition" th:value="*{player != null ? player.position : ''}" class="form-control">
+                        <div th:if="${#fields.hasErrors('player.position')}" th:errors="*{player.position}" class="text-danger"></div>
+                    </div>
+                    <div class="col-md-4">
+                        <label for="playerAge" class="form-label">Вік</label>
+                        <input type="number" id="playerAge" name="playerAge" th:value="*{player != null ? player.age : ''}" class="form-control" min="16" max="45">
+                        <div th:if="${#fields.hasErrors('player.age')}" th:errors="*{player.age}" class="text-danger"></div>
+                    </div>
+                </div>
+
+                <div class="row g-3 mb-4">
+                    <div class="col-md-6">
+                        <h5 class="section-title mb-4">Команда звідки</h5>
+                        <div class="mb-3">
+                            <label for="fromTeamName" class="form-label">Назва команди</label>
+                            <input type="text" id="fromTeamName" name="fromTeamName" th:value="*{fromTeam != null ? fromTeam.name : ''}" class="form-control" required>
+                             <div th:if="${#fields.hasErrors('fromTeam.name')}" th:errors="*{fromTeam.name}" class="text-danger"></div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="fromTeamCountry" class="form-label">Країна</label>
+                            <input type="text" id="fromTeamCountry" name="fromTeamCountry" th:value="*{fromTeam != null ? fromTeam.country : ''}" class="form-control" required>
+                            <div th:if="${#fields.hasErrors('fromTeam.country')}" th:errors="*{fromTeam.country}" class="text-danger"></div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <h5 class="section-title mb-4">Команда куди</h5>
+                        <div class="mb-3">
+                            <label for="toTeamName" class="form-label">Назва команди</label>
+                            <input type="text" id="toTeamName" name="toTeamName" th:value="*{toTeam != null ? toTeam.name : ''}" class="form-control" required>
+                            <div th:if="${#fields.hasErrors('toTeam.name')}" th:errors="*{toTeam.name}" class="text-danger"></div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="toTeamCountry" class="form-label">Країна</label>
+                            <input type="text" id="toTeamCountry" name="toTeamCountry" th:value="*{toTeam != null ? toTeam.country : ''}" class="form-control" required>
+                            <div th:if="${#fields.hasErrors('toTeam.country')}" th:errors="*{toTeam.country}" class="text-danger"></div>
+                        </div>
+                         <div th:if="${#fields.hasErrors('toTeam')}" th:errors="*{toTeam}" class="text-danger"></div>
+                    </div>
+                </div>
+
+                <h5 class="section-title mb-4">Деталі трансферу</h5>
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label">Дата трансферу</label>
+                        <input type="date" th:field="*{transferDate}" class="form-control" required>
+                        <div th:if="${#fields.hasErrors('transferDate')}" th:errors="*{transferDate}" class="text-danger"></div>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Сума (€)</label>
+                        <input type="number" th:field="*{transferFee}" class="form-control" step="0.01" min="0" required>
+                        <div th:if="${#fields.hasErrors('transferFee')}" th:errors="*{transferFee}" class="text-danger"></div>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-between mt-5">
+                    <button type="submit" class="btn btn-primary-custom btn-lg text-white">
+                        <i class="fas fa-save me-2"></i>
+                        <span th:text="${transfer.id != null} ? 'Оновити' : 'Зберегти'"></span>
+                    </button>
+                    <a th:href="@{/transfers/list}" class="btn btn-secondary-custom btn-lg text-white">
+                        <i class="fas fa-times me-2"></i>Скасувати
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

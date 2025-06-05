@@ -46,7 +46,7 @@
                         <p class="text-muted">Керування користувачами системи</p>
                     </div>
                     <div>
-                        <a href="/transfers" class="btn btn-outline-primary me-2">Трансфери</a>
+                        <a href="/transfers/list" class="btn btn-outline-primary me-2">Трансфери</a>
                         <a href="/logout" class="btn btn-outline-danger">Вийти</a>
                     </div>
                 </div>

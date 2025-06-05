@@ -33,6 +33,7 @@ public class SecurityConfig {
                 .requestMatchers("/", "/home", "/register", "/login", "/css/**", "/js/**", "/images/**", "/api/users/register").permitAll()
                 .requestMatchers("/admin/**").hasRole("ADMIN")
                 .requestMatchers("/transfers/**", "/players/**", "/teams/**").hasAnyRole("USER", "ADMIN")
+                .requestMatchers("/transfers/create", "/transfers/edit/**", "/transfers/delete/**").hasRole("ADMIN")
                 .anyRequest().authenticated()
             )
             .formLogin(form -> form
